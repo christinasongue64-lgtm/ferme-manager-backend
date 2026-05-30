@@ -17,11 +17,11 @@ class Animal(models.Model):
         ('femelle', 'Femelle'),
     ]
     STATUS_CHOICES = [
-        ('Vivant', 'Vivant'),
-        ('Vendu', 'Vendu'),
-        ('Décédé', 'Décédé'),
-        ('Transféré', 'Transféré'),
-    ]
+    ('Vivant', 'Vivant'),
+    ('Vendu', 'Vendu'),
+    ('Decede', 'Décédé'),
+    ('Transfere', 'Transféré'),
+]
     ENTRY_CHOICES = [
         ('achat', 'Achat'),
         ('naissance', 'Naissance'),
