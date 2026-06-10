@@ -10,7 +10,7 @@ class CustomUser(AbstractUser):
     ]
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='employee')
     phone = models.CharField(max_length=20, blank=True)
-
+    email = models.EmailField(unique=True)
     def __str__(self):
         return f"{self.get_full_name() or self.username} ({self.get_role_display()})"
 

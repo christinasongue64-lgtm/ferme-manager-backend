@@ -17,6 +17,7 @@ urlpatterns = [
     path('api/auth/register/', RegisterView.as_view(), name='register'),
     path('api/auth/logout/', LogoutView.as_view(), name='logout'),
     path('api/auth/me/', MeView.as_view(), name='me'),
+    path('api/auth/', include('users.urls')),
     # Apps
     path('api/animals/', include('animals.urls')),
     path('api/health/', include('health.urls')),

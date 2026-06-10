@@ -6,7 +6,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import CustomTokenObtainPairSerializer, RegisterSerializer, UserSerializer
 from .models import CustomUser
-
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
@@ -38,3 +39,17 @@ class MeView(APIView):
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
+
+class UserViewSet(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Seuls les admins voient tous les utilisateurs
+        user = self.request.user
+        if user.role == 'admin':
+            return CustomUser.objects.all()
+        # Les autres ne voient que leur propre compte
+        return CustomUser.objects.filter(id=user.id)
+    def perform_update(self, serializer):
+        serializer.save()

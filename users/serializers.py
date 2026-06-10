@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import CustomUser
+from django.contrib.auth import authenticate
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -12,16 +13,16 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
 
     def validate(self, attrs):
-        data = super().validate(attrs)
-        data['user'] = {
-            'id': self.user.id,
-            'username': self.user.username,
-            'email': self.user.email,
-            'first_name': self.user.first_name,
-            'last_name': self.user.last_name,
-            'role': self.user.role,
-        }
-        return data
+       data = super().validate(attrs)
+       data ['user'] = {
+           'id': self.user.id,
+           'username': self.user.username,
+           'email' : self.user.email, 
+           'first_name' : self.user.first_name,
+           'last_name' : self.user.last_name,
+           'role' : self.user.role,   
+       }
+       return data
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -41,7 +42,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         if data['password'] != data['password2']:
-            raise serializers.ValidationError({'password': 'Les mots de passe ne correspondent pas.'})
+            raise serializers.ValidationError(
+                {'password': 'Les mots de passe ne correspondent pas.'}
+            )
         return data
 
     def create(self, validated_data):

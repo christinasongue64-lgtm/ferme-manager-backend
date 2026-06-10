@@ -20,9 +20,9 @@ class DashboardStatsView(APIView):
         from health.models import HealthRecord
 
         # Animals
-        total_animals = Animal.objects.filter(owner=user, status='alive').count()
+        total_animals = Animal.objects.filter(owner=user, status='Vivant').count()
         animals_by_type = list(
-            Animal.objects.filter(owner=user, status='alive')
+            Animal.objects.filter(owner=user, status='Vivant')
             .values('animal_type')
             .annotate(count=__import__('django.db.models', fromlist=['Count']).Count('id'))
         )
