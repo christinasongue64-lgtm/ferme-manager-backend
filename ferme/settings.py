@@ -65,12 +65,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ferme.wsgi.application'
 
-import dj_database_url
+
+
 DATABASES = {
-    'default': dj_database_url.config(
-        default=env('DATABASE_URL', default=f'sqlite:///{BASE_DIR}/db.sqlite3'),
-        conn_max_age=600,
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('DATABASE_NAME'),
+        'USER': os.environ.get('DATABASE_USER'),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+        'HOST': os.environ.get('DATABASE_HOST', 'localhost'),
+        'PORT': os.environ.get('DATABASE_PORT', '3306'),
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
+    }
 }
 
 AUTH_PASSWORD_VALIDATORS = [
