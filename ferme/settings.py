@@ -165,7 +165,7 @@ SIMPLE_JWT = {
 # 12. CORS CONFIGURATION
 # ============================================================
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[
-    'http://localhost:4200',
+    'https://ferme-manager-frontend.vercel.app',
     'http://127.0.0.1:4200',
 ])
 CORS_ALLOW_CREDENTIALS = True
