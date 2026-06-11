@@ -1,14 +1,12 @@
 #!/usr/bin/env bash
+# Exit on error
 set -o errexit
 
+# Install dependencies
 pip install -r requirements.txt
+
+# Collect static files
 python manage.py collectstatic --no-input
+
+# Apply migrations
 python manage.py migrate
-#!/bin/bash
-
-# Mettre à jour et installer les dépendances système nécessaires
-apt-get update
-apt-get install -y default-libmysqlclient-dev gcc pkg-config
-
-# Installer les dépendances Python
-pip install -r requirements.txt
