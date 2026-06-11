@@ -28,7 +28,7 @@ if os.path.exists(env_file):
 # ============================================================
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-changeme-in-production')
 DEBUG = env('DEBUG', default=False)
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
+ALLOWED_HOSTS = ['.onrender.com']
 
 # ============================================================
 # 4. APPLICATIONS
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # Third party apps
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     # Local apps
     'users',
@@ -89,26 +90,13 @@ WSGI_APPLICATION = 'ferme.wsgi.application'
 # 5. BASE DE DONNÉES
 # ============================================================
 # Récupérer DATABASE_URL depuis l'environnement
-DATABASE_URL = os.environ.get('DATABASE_URL')
-
-if DATABASE_URL:
-    # Production (Render) - PostgreSQL
-    # Utiliser parse() au lieu de config() pour plus de fiabilité
-    DATABASES = {
-        'default': dj_database_url.parse(
-            DATABASE_URL,
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
-    }
-else:
-    # Développement local - SQLite
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+DATABASES = {
+    'default': dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
+}
 # ============================================================
 # 6. VALIDATION DES MOTS DE PASSE
 # ============================================================
