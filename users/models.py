@@ -8,7 +8,7 @@ class CustomUser(AbstractUser):
         ('manager', 'Gestionnaire'),
         ('employee', 'Employé'),
     ]
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='employee')
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='admin')
     phone = models.CharField(max_length=20, blank=True)
     email = models.EmailField(unique=True)
     def __str__(self):
