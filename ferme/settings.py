@@ -88,12 +88,15 @@ WSGI_APPLICATION = 'ferme.wsgi.application'
 # ============================================================
 # 5. BASE DE DONNÉES
 # ============================================================
+# Récupérer DATABASE_URL depuis l'environnement
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
 if DATABASE_URL:
     # Production (Render) - PostgreSQL
+    # Utiliser parse() au lieu de config() pour plus de fiabilité
     DATABASES = {
-        'default': dj_database_url.config(
+        'default': dj_database_url.parse(
+            DATABASE_URL,
             conn_max_age=600,
             conn_health_checks=True,
         )
@@ -106,7 +109,6 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-
 # ============================================================
 # 6. VALIDATION DES MOTS DE PASSE
 # ============================================================
