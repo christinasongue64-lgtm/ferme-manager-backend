@@ -3,21 +3,6 @@ from pathlib import Path
 from datetime import timedelta
 import environ
 import dj_database_url
-# DEBUG TEMPORAIRE - À SUPPRIMER APRÈS
-print("=" * 50)
-print(f"DATABASE_URL présente: {'DATABASE_URL' in os.environ}")
-print(f"DATABASE_URL valeur: {os.environ.get('DATABASE_URL', 'NON DÉFINIE')[:50]}...")
-print("=" * 50)
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Configuration de django-environ
-env = environ.Env(
-    DEBUG=(bool, False),
-    ALLOWED_HOSTS=(list, ['*']),
-    CORS_ALLOWED_ORIGINS=(list, ['http://localhost:4200'])
-)
 
 # Lire le fichier .env s'il existe (développement local)
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'), overwrite=False)
@@ -107,6 +92,22 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+    # DEBUG TEMPORAIRE - À SUPPRIMER APRÈS
+print("=" * 50)
+print(f"DATABASE_URL présente: {'DATABASE_URL' in os.environ}")
+print(f"DATABASE_URL valeur: {os.environ.get('DATABASE_URL', 'NON DÉFINIE')[:50]}...")
+print("=" * 50)
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Configuration de django-environ
+env = environ.Env(
+    DEBUG=(bool, False),
+    ALLOWED_HOSTS=(list, ['*']),
+    CORS_ALLOWED_ORIGINS=(list, ['http://localhost:4200'])
+)
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
