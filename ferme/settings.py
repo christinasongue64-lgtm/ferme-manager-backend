@@ -4,18 +4,35 @@ from datetime import timedelta
 import environ
 import dj_database_url
 
-# Lire le fichier .env s'il existe (développement local)
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'), overwrite=False)
+# ============================================================
+# 1. BASE_DIR - DOIT ÊTRE EN PREMIER !
+# ============================================================
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# ============================================================
+# 2. CONFIGURATION ENVIRON
+# ============================================================
+env = environ.Env(
+    DEBUG=(bool, False),
+    ALLOWED_HOSTS=(list, ['*']),
+    CORS_ALLOWED_ORIGINS=(list, ['http://localhost:4200'])
+)
+
+# Lire le fichier .env s'il existe (développement local uniquement)
+env_file = os.path.join(BASE_DIR, '.env')
+if os.path.exists(env_file):
+    environ.Env.read_env(env_file, overwrite=False)
+
+# ============================================================
+# 3. SÉCURITÉ
+# ============================================================
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-changeme-in-production')
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG', default=False)
-
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 
-# Application definition
+# ============================================================
+# 4. APPLICATIONS
+# ============================================================
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,7 +55,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # WhiteNoise pour les fichiers statiques
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -68,16 +85,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ferme.wsgi.application'
 
-
-import dj_database_url
-
-# Configuration de la base de données
-# Sur Render : utilise DATABASE_URL (PostgreSQL)
-# En local : utilise SQLite si DATABASE_URL n'est pas défini
+# ============================================================
+# 5. BASE DE DONNÉES
+# ============================================================
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
 if DATABASE_URL:
-    # Production (Render)
+    # Production (Render) - PostgreSQL
     DATABASES = {
         'default': dj_database_url.config(
             conn_max_age=600,
@@ -85,31 +99,17 @@ if DATABASE_URL:
         )
     }
 else:
-    # Développement local
+    # Développement local - SQLite
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-    # DEBUG TEMPORAIRE - À SUPPRIMER APRÈS
-print("=" * 50)
-print(f"DATABASE_URL présente: {'DATABASE_URL' in os.environ}")
-print(f"DATABASE_URL valeur: {os.environ.get('DATABASE_URL', 'NON DÉFINIE')[:50]}...")
-print("=" * 50)
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Configuration de django-environ
-env = environ.Env(
-    DEBUG=(bool, False),
-    ALLOWED_HOSTS=(list, ['*']),
-    CORS_ALLOWED_ORIGINS=(list, ['http://localhost:4200'])
-)
-
-
-# Password validation
+# ============================================================
+# 6. VALIDATION DES MOTS DE PASSE
+# ============================================================
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -117,28 +117,33 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Internationalization
+# ============================================================
+# 7. INTERNATIONALISATION
+# ============================================================
 LANGUAGE_CODE = 'fr-fr'
 TIME_ZONE = 'Africa/Douala'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# ============================================================
+# 8. FICHIERS STATIQUES ET MÉDIA
+# ============================================================
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Media files (User uploaded content)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Default primary key field type
+# ============================================================
+# 9. CONFIGURATION DJANGO
+# ============================================================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Custom User Model
 AUTH_USER_MODEL = 'users.CustomUser'
 
-# Django REST Framework Configuration
+# ============================================================
+# 10. DJANGO REST FRAMEWORK
+# ============================================================
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -151,7 +156,9 @@ REST_FRAMEWORK = {
     ),
 }
 
-# Simple JWT Configuration
+# ============================================================
+# 11. JWT CONFIGURATION
+# ============================================================
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=8),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
@@ -162,14 +169,18 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-# CORS Configuration
+# ============================================================
+# 12. CORS CONFIGURATION
+# ============================================================
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[
     'http://localhost:4200',
     'http://127.0.0.1:4200',
 ])
 CORS_ALLOW_CREDENTIALS = True
 
-# Security Settings for Production
+# ============================================================
+# 13. SÉCURITÉ EN PRODUCTION
+# ============================================================
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
