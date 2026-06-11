@@ -3,6 +3,11 @@ from pathlib import Path
 from datetime import timedelta
 import environ
 import dj_database_url
+# DEBUG TEMPORAIRE - À SUPPRIMER APRÈS
+print("=" * 50)
+print(f"DATABASE_URL présente: {'DATABASE_URL' in os.environ}")
+print(f"DATABASE_URL valeur: {os.environ.get('DATABASE_URL', 'NON DÉFINIE')[:50]}...")
+print("=" * 50)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -78,16 +83,30 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ferme.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-# Configuration pour Render (PostgreSQL) avec fallback SQLite pour le développement local
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL', f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
+
+import dj_database_url
+
+# Configuration de la base de données
+# Sur Render : utilise DATABASE_URL (PostgreSQL)
+# En local : utilise SQLite si DATABASE_URL n'est pas défini
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    # Production (Render)
+    DATABASES = {
+        'default': dj_database_url.config(
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
+else:
+    # Développement local
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
