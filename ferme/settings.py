@@ -97,6 +97,8 @@ DATABASES = {
         conn_health_checks=True,
     )
 }
+print("DATABASE_URL =", os.getenv("DATABASE_URL"))
+print("DATABASES =", DATABASES)
 # ============================================================
 # 6. VALIDATION DES MOTS DE PASSE
 # ============================================================
