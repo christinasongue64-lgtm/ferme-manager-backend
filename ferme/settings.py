@@ -166,6 +166,7 @@ SIMPLE_JWT = {
 # ============================================================
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[
     'https://ferme-manager-frontend.vercel.app',
+    'http://localhost:4200',
     'http://127.0.0.1:4200',
 ])
 CORS_ALLOW_CREDENTIALS = True
@@ -174,12 +175,12 @@ CORS_ALLOW_CREDENTIALS = True
 # 13. SÉCURITÉ EN PRODUCTION
 # ============================================================
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True
+    SECURE_SSL_REDIRECT = False        # ← Render gère déjà le SSL
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
+    SECURE_HSTS_SECONDS = 0            # ← Désactivé sur Render
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+    SECURE_HSTS_PRELOAD = False
     X_FRAME_OPTIONS = 'DENY'
